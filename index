@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MAF Percentage Calculator</title>
+    <style>
+        /* General Styling */
+        body {
+            font-family: Arial, sans-serif;
+            padding: 15px;
+            margin: 0;
+            background-color: #f4f4f4;
+        }
+        h1 {
+            color: #333;
+            font-size: 1.8rem;
+            text-align: center;
+        }
+        form {
+            max-width: 100%;
+            margin: 0 auto;
+        }
+        label {
+            margin-top: 10px;
+            display: block;
+            font-size: 1rem;
+        }
+        input {
+            margin-top: 10px;
+            padding: 12px;
+            width: 100%;
+            box-sizing: border-box;
+            font-size: 1rem;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        /* Customer Info Section */
+        .customer-info {
+            margin-top: 30px;
+            background-color: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+        .customer-info h3 {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+        }
+        .customer-info p {
+            font-size: 1rem;
+        }
+        /* Print button */
+        .print-button {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        .print-button:hover {
+            background-color: #0056b3;
+        }
+        /* Disclaimer Section */
+        .disclaimer {
+            margin-top: 30px;
+            background-color: #ffffff;
+            color: #00000;
+            padding: 30px;
+            border: 1px solid #00000;
+            border-radius: 5px;
+        }
+        /* Mobile-Friendly Styling */
+        @media (max-width: 600px) {
+            body {
+                padding: 10px;
+            }
+            h1 {
+                font-size: 1.5rem;
+            }
+            input {
+                font-size: 14px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>Mass Air Flow Calculator</h1>
+    <form id="maf-form">
+        <label for="timestamp">Date and Time of Testing:</label>
+        <input type="text" id="timestamp" readonly><br>
+
+        <label for="customerName">Customer's Name:</label>
+        <input type="text" id="customerName" name="customerName" required><br>
+
+        <label for="ro">Repair Order (RO):</label>
+        <input type="text" id="ro" name="ro" required><br>
+
+        <label for="vehicleYear">Vehicle Year:</label>
+        <input type="number" id="vehicleYear" name="vehicleYear" required><br>
+
+        <label for="vehicleMake">Vehicle Make:</label>
+        <input type="text" id="vehicleMake" name="vehicleMake" required><br>
+
+        <label for="vehicleModel">Vehicle Model:</label>
+        <input type="text" id="vehicleModel" name="vehicleModel" required><br>
+
+        <label for="displacement">Engine Displacement (Liters):</label>
+        <input type="number" id="displacement" name="displacement" step="any" required><br>
+
+        <label for="rpm">Engine RPM:</label>
+        <input type="number" id="rpm" name="rpm" step="any" required><br>
+
+        <label for="actualMaf">Actual MAF (g/s):</label>
+        <input type="number" id="actualMaf" name="actualMaf" step="any" required><br>
+    </form>
+
+    <div class="customer-info" id="customerInfo">
+        <h3>Customer MAF Results</h3>
+        <p><strong>Date and Time of Testing:</strong> <span id="customerTimestamp"></span></p>
+        <p><strong>Customer's Name:</strong> <span id="customerNameResult"></span></p>
+        <p><strong>Repair Order (RO):</strong> <span id="customerRo"></span></p>
+        <p><strong>Vehicle:</strong> <span id="customerVehicleYear"></span> <span id="customerVehicleMake"></span> <span id="customerVehicleModel"></span></p>
+        <p><strong>Engine Displacement:</strong> <span id="customerDisplacement"></span> L</p>
+        <p><strong>Engine RPM:</strong> <span id="customerRpm"></span> RPM</p>
+        <p><strong>Actual MAF:</strong> <span id="customerActualMaf"></span> g/s</p>
+        <p><strong>Expected MAF:</strong> <span id="customerExpectedMaf"></span> g/s</p>
+        <p><strong>MAF Deviation:</strong> <span id="customerPercentageResult"></span> %</p>
+        <p><strong>Fuel Trim Adjustment:</strong> <span id="customerFuelTrimResult"></span></p>
+
+        <div class="disclaimer">
+            <p>The Mass Air Flow (MAF) Calculator is intended as a basic tool for quick diagnostics and is not meant to replace full system diagnostics. The expected MAF values are estimated using simplified calculations and do not account for all possible variables, such as engine load, throttle position, boost pressure (for turbocharged engines), or environmental factors like temperature and altitude. Always verify results using appropriate diagnostic equipment and techniques. This tool should be used as part of a comprehensive diagnosis and not in isolation. For accurate readings, consult the vehicle manufacturer’s specifications and use certified diagnostic tools where applicable.</p>
+
+    <div class="disclaimer">
+        <h3>General Impact on Diagnostics:</h3>
+        <p><strong>Under-reporting Airflow:</strong> A dirty MAF sensor causes the ECU to believe there’s less air entering the engine than there actually is, leading to a lean air-fuel mixture.</p>
+        <p><strong>Fuel Trim Compensation:</strong> The ECU will try to compensate by adjusting long-term and short-term fuel trims (LTFT and STFT). This compensation works at cruising speeds but might not be sufficient at idle or high RPM, leading to the symptoms described.</p>
+        <p><strong>Diagnostic Trouble Codes (DTCs):</strong> A dirty MAF sensor may not immediately trigger a check engine light, but over time, it could set DTCs such as P0171 (System Too Lean) or P0101 (MAF Sensor Performance).</p>
+        <h3>Conclusion:</h3>
+        <p>At idle, the engine may run lean, causing rough idle or stalling.</p>
+        <p>At cruise, there may be reduced power and fuel efficiency due to a lean condition.</p>
+        <p>At high RPMs, the engine may suffer significant power loss and possibly knock, posing a risk of engine damage.</p>
+    </div>
+        </div>
+
+        <button class="print-button" onclick="printResults()">Print Results</button>
+    </div>
+    <script>
+        // Function to update timestamp with current date and time
+        function updateTimestamp() {
+            const now = new Date();
+            const formattedTimestamp = now.toLocaleString();
+            document.getElementById('timestamp').value = formattedTimestamp;
+            document.getElementById('customerTimestamp').textContent = formattedTimestamp;
+        }
+
+        // Function to calculate MAF percentage difference and fuel trim
+        function calculateMAFPercentage() {
+            const displacement = parseFloat(document.getElementById('displacement').value);
+            const rpm = parseFloat(document.getElementById('rpm').value);
+            const actualMaf = parseFloat(document.getElementById('actualMaf').value);
+
+            if (!isNaN(displacement) && !isNaN(rpm) && !isNaN(actualMaf)) {
+                const expectedMaf = displacement * (rpm / 600);
+                const percentageDifference = ((actualMaf - expectedMaf) / expectedMaf) * 100;
+                const fuelTrimAdjustment = percentageDifference < 0
+                    ? '+' + Math.abs(percentageDifference).toFixed(2) + ' %'
+                    : '-' + percentageDifference.toFixed(2) + ' %';
+
+                // Update customer result section
+                document.getElementById('customerNameResult').textContent = document.getElementById('customerName').value;
+                document.getElementById('customerRo').textContent = document.getElementById('ro').value;
+                document.getElementById('customerVehicleYear').textContent = document.getElementById('vehicleYear').value;
+                document.getElementById('customerVehicleMake').textContent = document.getElementById('vehicleMake').value;
+                document.getElementById('customerVehicleModel').textContent = document.getElementById('vehicleModel').value;
+                document.getElementById('customerDisplacement').textContent = displacement;
+                document.getElementById('customerRpm').textContent = rpm;
+                document.getElementById('customerActualMaf').textContent = actualMaf;
+                document.getElementById('customerExpectedMaf').textContent = expectedMaf.toFixed(2);
+                document.getElementById('customerPercentageResult').textContent = percentageDifference.toFixed(2);
+                document.getElementById('customerFuelTrimResult').textContent = fuelTrimAdjustment;
+            } else {
+                document.getElementById('customerDisplacement').textContent = 'N/A';
+                document.getElementById('customerRpm').textContent = 'N/A';
+                document.getElementById('customerActualMaf').textContent = 'N/A';
+                document.getElementById('customerExpectedMaf').textContent = 'N/A';
+                document.getElementById('customerPercentageResult').textContent = '0%';
+                document.getElementById('customerFuelTrimResult').textContent = 'N/A';
+            }
+        }
+
+        // Print customer result section
+        function printResults() {
+            const printContent = document.getElementById('customerInfo').innerHTML;
+            const printWindow = window.open('', '_blank', 'width=800,height=600');
+            printWindow.document.write(`<html><head><title>MAF Calculation Results</title></head><body>${printContent}</body></html>`);
+            printWindow.document.close();
+            printWindow.print();
+        }
+
+        // Add event listeners to input fields to trigger real-time calculation and timestamp
+        document.getElementById('displacement').addEventListener('input', calculateMAFPercentage);
+        document.getElementById('rpm').addEventListener('input', calculateMAFPercentage);
+        document.getElementById('actualMaf').addEventListener('input', calculateMAFPercentage);
+
+        // Update timestamp on page load
+        updateTimestamp();
+    </script>
+</body>
+</html>
